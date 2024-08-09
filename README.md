@@ -4,6 +4,10 @@ Este script captura y analiza paquetes de red, mostrando información de las cap
 # Funciones
 ```parse_ethernet_header(data)```
 - Analiza la cabecera Ethernet.
-- Parámetros: data (bytes) - Los primeros 14 bytes del paquete de datos.
-- Devuelve: Diccionario con las direcciones MAC de destino y origen, y el protocolo.
+- Como parámetro usa data (bytes) - Los primeros 14 bytes del paquete de datos.
+- y al terminar devuelve un diccionario con las direcciones MAC de destino y origen, y el protocolo.
 
+```parse_ip_header(data)```
+- Analiza la cabecera IP.
+- Como parámetro usa data (bytes) - Los primeros 20 bytes de la cabecera IP.
+- al terminar devuelve un diccionario con la versión, longitud de la cabecera, TTL, protocolo, y direcciones IP de origen y destino.
