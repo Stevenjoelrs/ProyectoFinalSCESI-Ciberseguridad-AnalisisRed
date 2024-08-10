@@ -22,3 +22,15 @@ def parse_ip_header(data):
         'src_ip': socket.inet_ntoa(src),
         'dest_ip': socket.inet_ntoa(target)
     }
+
+def parse_tcp_header(data):
+    src_port, dest_port, sequence, acknowledgment, offset_reserved_flags = struct.unpack('!HHLLH', data[:14])
+    offset = (offset_reserved_flags >> 12) * 4
+    return {
+        'src_port': src_port,
+        'dest_port': dest_port,
+        'sequence': sequence,
+        'acknowledgment': acknowledgment,
+        'header_length': offset
+    }
+

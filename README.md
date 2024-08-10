@@ -11,3 +11,8 @@ Este script captura y analiza paquetes de red, mostrando información de las cap
 - Analiza la cabecera IP.
 - Como parámetro usa data (bytes) - Los primeros 20 bytes de la cabecera IP.
 - al terminar devuelve un diccionario con la versión, longitud de la cabecera, TTL, protocolo, y direcciones IP de origen y destino.
+
+```parse_tcp_header```
+- Analiza la cabecera TCP
+- De parametros usa los primeros 12 bytes de la cabecera tcp
+- Por ultimo devuelve un diccionario con los puertos de origen y destino, numero de secuencia, ACK number y longitud de cabecera.
