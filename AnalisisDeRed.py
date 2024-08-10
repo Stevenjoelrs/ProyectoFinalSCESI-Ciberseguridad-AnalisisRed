@@ -2,6 +2,9 @@ import socket
 import struct
 import subprocess
 from collections import defaultdict
+from colorama import Fore, Style, init
+
+init()
 
 def parse_ethernet_header(data):
     dest_mac, src_mac, proto = struct.unpack('!6s6sH', data[:14])
@@ -47,7 +50,7 @@ def filter_traffic(packet, protocol):
         return True
     return False
 
-def scan_ports(ip): #escanea que puertos estan abiertos
+def scan_ports(ip):
     open_ports = []
     for port in range(1, 1024):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,14 +66,14 @@ def run_nmap(ip):
     return result.stdout
 
 def send_alert(message):
-    print(f"ALERTA: {message}")
+    print(f"{Fore.RED}ALERTA: {message}{Style.RESET_ALL}")
 
 def detect_anomalies(ip, packet_count):
-    if packet_count[ip] > 100:
+    if packet_count[ip] > 1500:  # Umbral de ejemplo
         send_alert(f'Tráfico inusual detectado desde {ip}: {packet_count[ip]} paquetes')
 
 def detect_brute_force(ip, failed_attempts):
-    if failed_attempts[ip] > 10:
+    if failed_attempts[ip] > 10:  # Umbral de ejemplo
         send_alert(f'Posible ataque de fuerza bruta detectado desde {ip}: {failed_attempts[ip]} intentos fallidos')
 
 def main(protocol_filter=None):
@@ -81,11 +84,11 @@ def main(protocol_filter=None):
     while True:
         raw_data, addr = conn.recvfrom(65536)
         ethernet_header = parse_ethernet_header(raw_data)
-        print('\nEthernet Header:', ethernet_header)
+        print(f'\n{Fore.BLUE}Ethernet Header:{Style.RESET_ALL} {ethernet_header}')
         
         if ethernet_header['protocol'] == 8:  # IPv4
             ip_header = parse_ip_header(raw_data[14:])
-            print('IP Header:', ip_header)
+            print(f'{Fore.GREEN}IP Header:{Style.RESET_ALL} {ip_header}')
             
             packet_count[ip_header['src_ip']] += 1
             detect_anomalies(ip_header['src_ip'], packet_count)
@@ -95,24 +98,24 @@ def main(protocol_filter=None):
             
             if ip_header['protocol'] == 6:  # TCP
                 tcp_header = parse_tcp_header(raw_data[14 + ip_header['header_length']:])
-                print('TCP Header:', tcp_header)
+                print(f'{Fore.YELLOW}TCP Header:{Style.RESET_ALL} {tcp_header}')
                 
                 ip_header['src_port'] = tcp_header['src_port']
                 ip_header['dest_port'] = tcp_header['dest_port']
                 
-                if tcp_header['src_port'] == 22 and tcp_header['acknowledgment'] == 0:
+                if tcp_header['src_port'] == 22 and tcp_header['acknowledgment'] == 0: 
                     failed_attempts[ip_header['src_ip']] += 1
                     detect_brute_force(ip_header['src_ip'], failed_attempts)
                 
                 open_ports = scan_ports(ip_header['src_ip'])
                 if open_ports:
                     send_alert(f'Puertos abiertos detectados en {ip_header["src_ip"]}: {open_ports}')
-                
+
                 nmap_result = run_nmap(ip_header['src_ip'])
                 if "open" in nmap_result:
                     send_alert(f'Posible vulnerabilidad detectada en {ip_header["src_ip"]}:\n{nmap_result}')
-                print(f'Resultado de Nmap para {ip_header["src_ip"]}:\n{nmap_result}')
+                print(f'{Fore.CYAN}Resultado de Nmap para {ip_header["src_ip"]}:{Style.RESET_ALL}\n{nmap_result}')
 
 if __name__ == "__main__":
-    protocol = input("Ingrese el tipo de tráfico a filtrar (TCP, UDP, ICMP) o presione Enter para capturar todo: ")
+    protocol = input("Ingrese el tipo de tráfico a filtrar (TCP, UDP, ICMP, HTTP) o presione Enter para capturar todo: ")
     main(protocol_filter=protocol.upper() if protocol else None)
