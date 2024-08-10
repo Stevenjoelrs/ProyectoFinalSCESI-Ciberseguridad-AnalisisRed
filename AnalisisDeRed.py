@@ -45,6 +45,17 @@ def filter_traffic(packet, protocol):
         return True
     return False
 
+def scan_ports(ip): #escanea que puertos estan abiertos
+    open_ports = []
+    for port in range(1, 1024):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((ip, port))
+        if result == 0:
+            open_ports.append(port)
+        sock.close()
+    return open_ports
+
 def main(protocol_filter=None):
     conn = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(3))
     
