@@ -39,6 +39,14 @@ def parse_tcp_header(data):
         'header_length': offset
     }
 
+def parse_http_header(data):
+    try:
+        http_data = data.decode('utf-8')
+        headers = http_data.split('\r\n')
+        return headers
+    except UnicodeDecodeError:
+        return None
+
 def filter_traffic(packet, protocol):
     if protocol == 'TCP' and packet['protocol'] == 6:
         return True
@@ -103,14 +111,22 @@ def main(protocol_filter=None):
                 ip_header['src_port'] = tcp_header['src_port']
                 ip_header['dest_port'] = tcp_header['dest_port']
                 
-                if tcp_header['src_port'] == 22 and tcp_header['acknowledgment'] == 0: 
+                if tcp_header['src_port'] == 22 and tcp_header['acknowledgment'] == 0:
                     failed_attempts[ip_header['src_ip']] += 1
                     detect_brute_force(ip_header['src_ip'], failed_attempts)
                 
+                # Analizar cabecera HTTP si es un paquete HTTP
+                if tcp_header['dest_port'] == 80 or tcp_header['src_port'] == 80:
+                    http_header = parse_http_header(raw_data[14 + ip_header['header_length'] + tcp_header['header_length']:])
+                    if http_header:
+                        print(f'{Fore.CYAN}HTTP Header:{Style.RESET_ALL}')
+                        for line in http_header:
+                            print(line)
+
                 open_ports = scan_ports(ip_header['src_ip'])
                 if open_ports:
                     send_alert(f'Puertos abiertos detectados en {ip_header["src_ip"]}: {open_ports}')
-
+                
                 nmap_result = run_nmap(ip_header['src_ip'])
                 if "open" in nmap_result:
                     send_alert(f'Posible vulnerabilidad detectada en {ip_header["src_ip"]}:\n{nmap_result}')
