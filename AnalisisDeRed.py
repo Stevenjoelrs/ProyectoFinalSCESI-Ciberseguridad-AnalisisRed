@@ -111,17 +111,16 @@ def main(protocol_filter=None):
                 ip_header['src_port'] = tcp_header['src_port']
                 ip_header['dest_port'] = tcp_header['dest_port']
                 
-                if tcp_header['src_port'] == 22 and tcp_header['acknowledgment'] == 0:
+                if tcp_header['src_port'] == 22 and tcp_header['acknowledgment'] == 0:  # Ejemplo de intento fallido en SSH
                     failed_attempts[ip_header['src_ip']] += 1
                     detect_brute_force(ip_header['src_ip'], failed_attempts)
                 
-                # Analizar cabecera HTTP si es un paquete HTTP
                 if tcp_header['dest_port'] == 80 or tcp_header['src_port'] == 80:
                     http_header = parse_http_header(raw_data[14 + ip_header['header_length'] + tcp_header['header_length']:])
                     if http_header:
-                        print(f'{Fore.CYAN}HTTP Header:{Style.RESET_ALL}')
+                        print(f'{Fore.MAGENTA}HTTP Header:{Style.RESET_ALL}')
                         for line in http_header:
-                            print(line)
+                            print(f'{Fore.MAGENTA}{line}{Style.RESET_ALL}')
 
                 open_ports = scan_ports(ip_header['src_ip'])
                 if open_ports:
