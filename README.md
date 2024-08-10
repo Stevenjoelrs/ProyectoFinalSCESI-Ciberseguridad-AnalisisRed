@@ -1,5 +1,5 @@
 # ProyectoFinalSCESI-Ciberseguridad-AnalisisRed
-Este script captura y analiza paquetes de red, mostrando información de las capas de enlace, red y transporte. También permite filtrar tipos de tráfico específicos (TCP, UDP, ICMP).
+Este script captura y analiza paquetes de red, mostrando información de las capas de enlace, red y transporte. También permite filtrar tipos de tráfico específicos (TCP, UDP, ICMP y HTTP).
 
 # Funciones
 ```parse_ethernet_header(data)```
