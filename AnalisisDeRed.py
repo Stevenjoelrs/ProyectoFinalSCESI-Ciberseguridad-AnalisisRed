@@ -69,7 +69,7 @@ def send_alert(message):
     print(f"{Fore.RED}ALERTA: {message}{Style.RESET_ALL}")
 
 def detect_anomalies(ip, packet_count):
-    if packet_count[ip] > 100:  # Umbral de ejemplo
+    if packet_count[ip] > 1500:  # Umbral de ejemplo
         send_alert(f'Tráfico inusual detectado desde {ip}: {packet_count[ip]} paquetes')
 
 def detect_brute_force(ip, failed_attempts):
