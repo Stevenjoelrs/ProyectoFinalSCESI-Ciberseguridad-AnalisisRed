@@ -41,6 +41,8 @@ def filter_traffic(packet, protocol):
         return True
     elif protocol == 'ICMP' and packet['protocol'] == 1:
         return True
+    elif protocol == 'HTTP' and packet['protocol'] == 6 and (packet['src_port'] == 80 or packet['dest_port'] == 80):
+        return True
     return False
 
 def main(protocol_filter=None):
