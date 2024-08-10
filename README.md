@@ -25,6 +25,36 @@ Este script captura y analiza paquetes de red, mostrando información de las cap
 - devuelve respuesta booleana al indicar el tipo
     - ```True``` si el paquete coincide con el protocolo filtrado
     - ```False``` si el paquete no coincide
+ 
+```scan_ports(ip)```
+- Escanea puertos abiertos en una dirección IP.
+- parametro dirección IP a escanear.
+- Devuelve una Lista de puertos abiertos.
+- Esta función se utiliza para detectar puertos abiertos en una dirección IP específica, lo que puede indicar servicios vulnerables.
+
+```run_nmap(ip)```
+- Ejecuta Nmap en una dirección IP y analiza los resultados.
+- Usa de parametro la dirección IP a escanear con Nmap.
+- Devuelve el Resultado del escaneo de Nmap.
+- Esta función se utiliza para obtener información detallada sobre los servicios y versiones de software en una dirección IP, ayudando a identificar posibles vulnerabilidades.
+
+```send_alert(message)```
+- Envía una alerta con un mensaje específico.
+- Esta función se utiliza para notificar cuando se detecta algo inusual o potencialmente peligroso en el tráfico de red.
+
+```detect_anomalies(ip, packet_count)```
+- Detecta anomalías en el tráfico de red.
+- Parámetros:
+    - Dirección IP a monitorear.
+    - Contador de paquetes por dirección IP.
+- Esta función se utiliza para detectar patrones de tráfico inusuales, como un aumento repentino en el número de paquetes enviados desde una dirección IP.
+
+```detect_brute_force(ip, failed_attempts)```
+- Detecta posibles ataques de fuerza bruta.
+- Parámetros:
+    - Dirección IP a monitorear.
+    - Contador de intentos fallidos por dirección IP.
+- Esta función se utiliza para detectar intentos repetidos de conexión fallidos, lo que puede indicar un ataque de fuerza bruta.
 
 ```main(protocol_filter=None)```
 - Captura y analiza paquetes de red
