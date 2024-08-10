@@ -34,3 +34,11 @@ def parse_tcp_header(data):
         'header_length': offset
     }
 
+def filter_traffic(packet, protocol):
+    if protocol == 'TCP' and packet['protocol'] == 6:
+        return True
+    elif protocol == 'UDP' and packet['protocol'] == 17:
+        return True
+    elif protocol == 'ICMP' and packet['protocol'] == 1:
+        return True
+    return False
