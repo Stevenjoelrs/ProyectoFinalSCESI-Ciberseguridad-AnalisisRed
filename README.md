@@ -25,3 +25,9 @@ Este script captura y analiza paquetes de red, mostrando información de las cap
 - devuelve respuesta booleana al indicar el tipo
     - ```True``` si el paquete coincide con el protocolo filtrado
     - ```False``` si el paquete no coincide
+
+```main(protocol_filter=None)```
+- Captura y analiza paquetes de red
+- Como parametros usa:
+    - ```protocol_filter``` verifica el protocolo filtrado si es ```None``` captura todo
+    

@@ -42,3 +42,26 @@ def filter_traffic(packet, protocol):
     elif protocol == 'ICMP' and packet['protocol'] == 1:
         return True
     return False
+
+def main(protocol_filter=None):
+    conn = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(3))
+    
+    while True:
+        raw_data, addr = conn.recvfrom(65536)
+        ethernet_header = parse_ethernet_header(raw_data)
+        print('\nEthernet Header:', ethernet_header)
+        
+        if ethernet_header['protocol'] == 8:  # IPv4
+            ip_header = parse_ip_header(raw_data[14:])
+            print('IP Header:', ip_header)
+            
+            if protocol_filter and not filter_traffic(ip_header, protocol_filter):
+                continue
+            
+            if ip_header['protocol'] == 6:  # TCP
+                tcp_header = parse_tcp_header(raw_data[14 + ip_header['header_length']:])
+                print('TCP Header:', tcp_header)
+
+if __name__ == "__main__":
+    protocol = input("Ingrese el tipo de tráfico a filtrar (TCP, UDP, ICMP) o presione Enter para capturar todo: ")
+    main(protocol_filter=protocol.upper() if protocol else None)
