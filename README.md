@@ -1,5 +1,10 @@
 # ProyectoFinalSCESI-Ciberseguridad-AnalisisRed
 Este script captura y analiza paquetes de red, mostrando información de las capas de enlace, red y transporte. También permite filtrar tipos de tráfico específicos (TCP, UDP, ICMP y HTTP).
+ 
+# Requisitos
+- Tener instalada la ultima version de ```Python3```
+- Terner instalado ```nmap```
+- Ejecutar el archivo ```AnalisisDeRed.py``` como super usuario
 
 # Funciones
 ```parse_ethernet_header(data)```
